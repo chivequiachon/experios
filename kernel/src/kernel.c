@@ -1,47 +1,37 @@
-#define BUFF_HEIGHT 25
-#define BUFF_WIDTH 80
+#include <stdint.h>
 
-typedef enum 
+#include "video.h"
+#include "memory.h"
+
+extern unsigned int kernel_end;
+
+void main(uint64_t mboot_addr)
 {
-	Black      = 0,
-	Blue       = 1,
-	Green      = 2,
-	Cyan       = 3,
-	Red        = 4,
-	Magenta    = 5,
-	Brown      = 6,
-	LightGray  = 7,
-	DarkGray   = 8,
-	LBlue      = 9,
-	LGreen     = 10,
-	LCyan      = 11,
-	LRed       = 12,
-	Pink       = 13,
-	Yellow     = 14,
-	White      = 15
-} 	COLOR;
+  cls();
 
-void printc(char x, char y, char c, COLOR bg, COLOR fg)
-{
-	volatile char *video = (volatile char*)0xb8000;
-	char color = bg << 4 | fg;
-	*(video + (x * 2) + (y * BUFF_WIDTH)) = c;
-	*(video + (x * 2 + 1) + (y * BUFF_WIDTH)) = color;
-}
+  BootInformation *bi = (BootInformation*)mboot_addr;
 
-void main()
-{
-	printc(0, 0, 'H', Blue, White);
-	printc(1, 0, 'E', Blue, White);
-	printc(2, 0, 'L', Blue, White);
-	printc(3, 0, 'L', Blue, White);
-	printc(4, 0, 'O', Blue, White);
-	printc(5, 0, ' ', Blue, White);
-	printc(6, 0, 'W', Blue, White);
-	printc(7, 0, 'O', Blue, White);
-	printc(8, 0, 'R', Blue, White);
-	printc(9, 0, 'L', Blue, White);
-	printc(10, 0, 'D', Blue, White);
+  puts(0, 1, "Hello User!\0", BLACK, GREEN);
+  puts(0, 2, "Printing memory information:\0", BLACK, GREEN);
 
-	while(1){}
+  puts(0, 3, "mboot_start:\0", BLACK, GREEN);
+  putval(12, 3, (uint64_t)mboot_addr, 16);
+
+  puts(0, 4, "mboot_end:\0", BLACK, GREEN);
+  putval(12, 4, (uint64_t)mboot_addr + bi->total_size, 16);
+
+  puts(0, 5, "memory_areas:\0", BLACK, GREEN);
+  print_memory_areas(mboot_addr, 6, 6, 0);
+
+  puts(0, 8, "elf_sections:\0", BLACK, GREEN);
+  MinMax mm = {0,0};
+  print_memory_areas(mboot_addr, 9, 9, (void*)&mm);
+
+  puts(0, 17, "kernel_start:\0", BLACK, GREEN);
+  putval(13, 17, mm.min, 16);
+
+  puts(0, 18, "kernel_end:\0", BLACK, GREEN);
+  putval(13, 18, mm.max, 16);
+
+  while(1){}
 }

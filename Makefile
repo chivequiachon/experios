@@ -1,28 +1,18 @@
 BIN_NAME=experios
 CC=x86_64-elf-gcc
-CFLAGS=-std=gnu99 -ffreestanding -O2 -Wall -Wextra -mno-red-zone
+CFLAGS=-nostdlib -nodefaultlibs -nostartfiles -std=gnu99 -ffreestanding -O2 -Wall -Wextra -mno-red-zone
 OBJ_DIR=kernel/obj
 
 KERNEL_CC_LIST:=\
+kernel/src/video.o \
+kernel/src/memory.o \
 kernel/src/kernel.o
-#kernel/cpu/gdt.o \
-#kernel/cpu/idt.o \
-#kernel/cpu/irq.o \
-#kernel/cpu/isr.o \
-#kernel/devices/timer.o \
-#kernel/devices/keyboard.o \
-#kernel/mem/mem2.o \
-#kernel/misc/tty.o \
-#kernel/misc/vga.o \
-#kernel/sys/system.o \
-#kernel/kernel.o \
-#kernel/libc.o
+#kernel/src/kernel.o
 
 KERNEL_AS_LIST:=\
 kernel/asm/multiboot_header.o \
 kernel/asm/boot.o \
 kernel/asm/long_mode_init.o
-#kernel/core.o
 
 KERNEL_INCLUDE_DIR=kernel/include
 
@@ -31,7 +21,7 @@ KERNEL_INCLUDE_DIR=kernel/include
 all: clean kernel iso
 
 clean:
-	find -type f \( -name "*.o" -o -name "*.bin" \) -delete
+	find -type f \( -name "*.o" -o -name "*.bin" -o -name "*.iso" \) -delete
 
 kernel: $(KERNEL_CC_LIST) $(KERNEL_AS_LIST)
 	@ld -m elf_x86_64 -n -o $(BIN_NAME).bin -T linker/linker.ld $(OBJ_DIR)/*

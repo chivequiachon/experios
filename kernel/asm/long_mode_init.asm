@@ -10,6 +10,9 @@ long_mode_start:
   mov fs, ax
   mov gs, ax
 
+  ;push rbx
+  ;push rax
+
   extern main
   call main
 
