@@ -37,7 +37,7 @@ void main(uint64_t mboot_addr)
   putval(13, 18, mm.max, 16);
   puts(0, 19, "Allocating Frames:\0", BLACK, GREEN);
   
-  AreaFrameAllocator alloc;
+  /*AreaFrameAllocator alloc;
   init_allocator(&alloc, mm.min, mm.max, mboot_addr, mboot_end, mem_areas, 2);
 
   uint64_t count = 0;
@@ -51,7 +51,7 @@ void main(uint64_t mboot_addr)
     count++;
   }
 
-  putval(21, 19, count, 10);
+  putval(21, 19, count, 10);*/
 
   while(1){}
 }
