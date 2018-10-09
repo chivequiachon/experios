@@ -36,7 +36,7 @@ kernel/%.o: kernel/%.asm
 
 iso: 
 	cp $(BIN_NAME).bin iso/boot/$(BIN_NAME).bin
-	grub-mkrescue -o $(BIN_NAME).iso iso/
+	grub-mkrescue --verbose -o $(BIN_NAME).iso iso/
 	cp $(BIN_NAME).iso iso/$(BIN_NAME).iso
 
 run:
